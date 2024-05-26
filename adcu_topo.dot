@@ -1,0 +1,245 @@
+// ADCU Topology
+digraph {
+    rankdir=RL;
+    graph [fontsize=10 fontname="Verdana" compound=true];
+	subgraph cluster_0 {
+	    node [color=lightgrey style=filled]
+		"/driver/driver_beta_camera_compress" [shape=ellipse]
+		"/driver/driver_alpha_camera_compress" [shape=ellipse]
+		"/driver/driver_alpha_camera_compress" -> "/driver/driver_alpha_camera_compress" [label="/calibration/avm_ack"]
+		"/driver/driver_alpha_camera_compress" -> "/driver/driver_alpha_camera_compress" [label="/calibration/cam7vlidar_ack"]
+		"/driver/driver_alpha_camera_compress" -> "/driver/driver_beta_camera_compress" [label="/driver/disp_stat"]
+		color=blue;
+		label=camera_driver
+	}
+	subgraph cluster_1 {
+	    node [color=lightgrey style=filled]
+		"/driver_lidar" [shape=ellipse]
+		"/driver_radar" [shape=ellipse]
+		"/driver_lidar" -> "/driver_lidar" [label="/calibration/cam7vlidar_ack"]
+		color=blue;
+		label=driver_lidar
+	}
+	subgraph cluster_2 {
+	    node [color=lightblue style=filled]
+		"/loc/loc_relative" [shape=ellipse]
+		color=blue;
+		label=loc_relative
+	}
+	subgraph cluster_3 {
+	    node [color=lightblue style=filled]
+		"/map/rc_scene_mapping" [shape=ellipse]
+		"/percp/percp_trafficlane" [shape=ellipse]
+		"/percp/image_quality" [shape=ellipse]
+		"/map/calib_server" [shape=ellipse]
+		"/percp/percp_vision_object" [shape=ellipse]
+		"/map/calib_guard" [shape=ellipse]
+		"/percp_radar_fusion" [shape=ellipse]
+		"/loc/map_loc_fusion" [shape=ellipse]
+		"/percp/percp_lidar_object" [shape=ellipse]
+		"/map/rc_scene_mapping" -> "/loc/map_loc_fusion" [label="/loc/ego_tf_vector_multi(事件触发)"]
+		"/map/calib_server" -> "/map/calib_guard" [label="/map/calib_params(1)"]
+		"/loc/map_loc_fusion" -> "/map/rc_scene_mapping" [label="/loc/ego_tf_multi(50)"]
+		"/map/calib_server" -> "/map/rc_scene_mapping" [label="/map/calib_params(1)"]
+		"/percp/percp_trafficlane" -> "/map/rc_scene_mapping" [label="/percp/env_traffic_lights(10)"]
+		"/percp/percp_trafficlane" -> "/map/rc_scene_mapping" [label="/percp/traffic_lane_multi(10)"]
+		"/percp/percp_trafficlane" -> "/map/rc_scene_mapping" [label="/percp/traffic_pole(10)"]
+		"/percp/percp_trafficlane" -> "/map/rc_scene_mapping" [label="/percp/traffic_sign(10)"]
+		"/percp/percp_trafficlane" -> "/map/rc_scene_mapping" [label="/percp/traffic_static_object(10)"]
+		"/map/calib_server" -> "/percp/percp_trafficlane" [label="/map/calib_params(1)"]
+		"/percp/image_quality" -> "/percp/percp_trafficlane" [label="/percp/image_quality(1)"]
+		"/map/calib_server" -> "/percp/percp_vision_object" [label="/map/calib_params(1)"]
+		"/map/calib_server" -> "/percp_radar_fusion" [label="/map/calib_params(1)"]
+		"/percp/percp_vision_object" -> "/percp_radar_fusion" [label="/percp/vision_objects(10)"]
+	    "/map/calib_server" -> "/percp/percp_lidar_object" [label="/map/calib_params(1)"]
+	    "/percp/percp_vision_object" -> "/percp/percp_lidar_object" [label="/percp/vision_objects(10)"]
+	    "/percp/percp_lidar_object" -> "/percp/percp_trafficlane" [label="/percp/road_boundarys(10)"]
+		color=blue;
+		label=nzp
+	}
+
+	subgraph cluster_4 {
+	    node [color=gold style=filled]
+		"/map/encrypt_plugin" [shape=ellipse]
+		color=blue;
+		label=map
+	}
+	subgraph cluster_5 {
+	    node [color=gold style=filled]
+		"/map/nav_service" [shape=ellipse]
+		color=blue;
+		label=nav_service
+	}
+	subgraph cluster_6 {
+	    node [color=lightyellow style=filled]
+		"/percp/percp_world_model" [shape=ellipse]
+		"/percp/localmap_vision" [shape=ellipse]
+		"/percp/uss" [shape=ellipse]
+		"/percp/percp_parking_slot" [shape=ellipse]
+		"/percp/percp_ipm_nn" [shape=ellipse]
+		"/percp/percp_ipm_nn" -> "/percp/localmap_vision" [label="/percp/ipm_seg(20)"]
+		"/percp/percp_parking_slot" -> "/percp/localmap_vision" [label="/percp/parking_slot(20)"]
+		"/percp/uss" -> "/percp/localmap_vision" [label="/percp/uss_fusion(20)"]
+		"/percp/localmap_vision" -> "/percp/percp_parking_slot" [label="/percp/localmap_ogm(10)"]
+		"/percp/percp_ipm_nn" -> "/percp/percp_parking_slot" [label="/percp/vision_slot(20)"]
+		"/percp/percp_ipm_nn" -> "/percp/percp_parking_slot" [label="/percp/vision_slot_mech(10)"]
+		"/percp/percp_ipm_nn" -> "/percp/percp_world_model" [label="/percp/ipm_seg(20)"]
+		"/percp/localmap_vision" -> "/percp/percp_world_model" [label="/percp/localmap_ogm(10)"]
+		"/percp/percp_parking_slot" -> "/percp/percp_world_model" [label="/percp/parking_slot(20)"]
+		"/percp/localmap_vision" -> "/percp/uss" [label="/percp/fisheye_det_uss"]
+		"/percp/percp_ipm_nn" -> "/percp/uss" [label="/percp/ipm_seg(20)"]
+		color=blue;
+		label=apa
+	}
+	subgraph cluster_7 {
+	    node [color=lightblue style=filled]
+		"/percp/percp_target_fusion_alpha" [shape=ellipse]
+		color=blue;
+		label=percp
+	}
+	subgraph cluster_8 {
+	    node [color=green style=filled]
+		"/pnc/pnc_adas" [shape=ellipse]
+		color=blue;
+		label=adas
+	}
+	subgraph cluster_9 {
+	    node [color=green style=filled]
+		"/pnc/pnc_mop" [shape=ellipse]
+		"/pnc/pnc_bdm" [shape=ellipse]
+		"/pnc/pnc_prediction" [shape=ellipse]
+		"/pnc/pnc_control" [shape=ellipse]
+		"/pnc/pnc_route" [shape=ellipse]
+		"/pnc/pnc_prediction" -> "/pnc/pnc_bdm" [label="/pnc/prediction_objects(20)"]
+		"/pnc/pnc_mop" -> "/pnc/pnc_control" [label="/pnc/mop_status(20)"]
+		"/pnc/pnc_mop" -> "/pnc/pnc_control" [label="/pnc/planning_result(20)"]
+		"/pnc/pnc_bdm" -> "/pnc/pnc_mop" [label="/pnc/bdm_result(10)"]
+		"/pnc/pnc_control" -> "/pnc/pnc_mop" [label="/pnc/control_command(50)"]
+		"/pnc/pnc_prediction" -> "/pnc/pnc_mop" [label="/pnc/prediction_objects(20)"]
+		"/pnc/pnc_route" -> "/pnc/pnc_mop" [label="/pnc/routing_result(10)"]
+		"/pnc/pnc_mop" -> "/pnc/pnc_prediction" [label="/pnc/planning_result(20)"]
+		"/pnc/pnc_prediction" -> "/pnc/pnc_route" [label="/pnc/prediction_objects(20)"]
+		color=blue;
+		label=pnc
+	}
+	subgraph cluster_10 {
+	    node [color=green style=filled]
+		"/pnc/pnc_wire_control" [shape=ellipse]
+		"/pnc/pnc_fsm" [shape=ellipse]
+		color=blue;
+		label=wire_control
+	}
+	edge[constraint=false];
+	"/driver_lidar" -> "/driver/driver_alpha_camera_compress" [label="/calibration/cam7vlidar_ack" ltail=cluster_0 lhead=cluster_1]
+	"/pnc/pnc_fsm" -> "/driver/driver_alpha_camera_compress" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_0]
+	"/pnc/pnc_fsm" -> "/driver/driver_beta_camera_compress" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_0]
+	"/driver/driver_alpha_camera_compress" -> "/driver_lidar" [label="/calibration/cam7vlidar_ack" ltail=cluster_0 lhead=cluster_1]
+	"/loc/loc_relative" -> "/driver_lidar" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_1]
+	"/map/calib_server" -> "/driver_lidar" [label="/map/calib_params(1)" ltail=cluster_3 lhead=cluster_1]
+	"/pnc/pnc_wire_control" -> "/driver_radar" [label="/pnc/body_report(50)" ltail=cluster_10 lhead=cluster_1]
+	"/loc/map_loc_fusion" -> "/loc/loc_relative" [label="/loc/ego_tf_multi(50)" ltail=cluster_3 lhead=cluster_2]
+	"/map_loc_lodom" -> "/loc/loc_relative" [label="/loc/ego_tf_relative_lidar(10)"]
+	"/pnc/pnc_wire_control" -> "/loc/loc_relative" [label="/pnc/body_report(50)" ltail=cluster_10 lhead=cluster_2]
+	"/pnc/pnc_wire_control" -> "/loc/loc_relative" [label="/pnc/chassis_report(100)" ltail=cluster_10 lhead=cluster_2]
+	"/map/encrypt_plugin" -> "/loc/map_loc_fusion" [label="/map/encrypt_gnss(10)" ltail=cluster_4 lhead=cluster_3]
+	"/map/encrypt_plugin" -> "/loc/map_loc_fusion" [label="/map/encrypt_ins(50)" ltail=cluster_4 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/loc/map_loc_fusion" [label="/pnc/chassis_report(100)" ltail=cluster_10 lhead=cluster_3]
+	"/driver_lidar" -> "/map/calib_guard" [label="/driver/lidar_front_pointcloud" ltail=cluster_1 lhead=cluster_3]
+	"/loc/loc_relative" -> "/map/calib_guard" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_3]
+	"/percp/percp_target_fusion_alpha" -> "/map/calib_guard" [label="/percp/fusion_objects(20)" ltail=cluster_7 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/map/calib_guard" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/map/calib_server" [label="/pnc/chassis_report(100)" ltail=cluster_10 lhead=cluster_3]
+	"/map/encrypt_plugin" -> "/map/nav_service" [label="/map/encrypt_ins(50)" ltail=cluster_4 lhead=cluster_5]
+	"/pnc/pnc_wire_control" -> "/map/nav_service" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_5]
+	"/loc/loc_relative" -> "/map/rc_scene_mapping" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_3]
+	"/map/nav_service" -> "/map/rc_scene_mapping" [label="/map/nav_adas_map(1)" ltail=cluster_5 lhead=cluster_3]
+	"/map/nav_service" -> "/map/rc_scene_mapping" [label="/map/nav_adas_map_matching(10)" ltail=cluster_5 lhead=cluster_3]
+	"/map/nav_service" -> "/map/rc_scene_mapping" [label="/map/nav_localmap(1)" ltail=cluster_5 lhead=cluster_3]
+	"/map/nav_service" -> "/map/rc_scene_mapping" [label="/map/nav_navigation_path(事件触发)" ltail=cluster_5 lhead=cluster_3]
+	"/percp/percp_target_fusion_alpha" -> "/map/rc_scene_mapping" [label="/percp/fusion_objects(20)" ltail=cluster_7 lhead=cluster_3]
+	"/percp/percp_world_model" -> "/map/rc_scene_mapping" [label="/percp/world_model(10)" ltail=cluster_6 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/map/rc_scene_mapping" [label="/pnc/body_report(50)" ltail=cluster_10 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/map/rc_scene_mapping" [label="/pnc/chassis_report(100)" ltail=cluster_10 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/map/rc_scene_mapping" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_3]
+	"/loc/loc_relative" -> "/map_loc_lodom" [label="/loc/ego_tf_relative(50)" ltail=cluster_2]
+	"/pnc/pnc_wire_control" -> "/map_loc_lodom" [label="/pnc/fsm_state(50)" ltail=cluster_10]
+	"/loc/loc_relative" -> "/percp/image_quality" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/percp/image_quality" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_3]
+	"/loc/loc_relative" -> "/percp/localmap_vision" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_6]
+	"/map/calib_server" -> "/percp/localmap_vision" [label="/map/calib_params(1)" ltail=cluster_3 lhead=cluster_6]
+	"/pnc/pnc_wire_control" -> "/percp/localmap_vision" [label="/pnc/body_report(50)" ltail=cluster_10 lhead=cluster_6]
+	"/pnc/pnc_wire_control" -> "/percp/localmap_vision" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_6]
+	"/map/calib_server" -> "/percp/percp_ipm_nn" [label="/map/calib_params(1)" ltail=cluster_3 lhead=cluster_6]
+	"/pnc/pnc_wire_control" -> "/percp/percp_ipm_nn" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_6]
+	"/loc/loc_relative" -> "/percp/percp_lidar_object" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/percp/percp_lidar_object" [label="/pnc/body_report(50)" ltail=cluster_10 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/percp/percp_lidar_object" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_3]
+	"/loc/loc_relative" -> "/percp/percp_parking_slot" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_6]
+	"/map/calib_server" -> "/percp/percp_parking_slot" [label="/map/calib_params(1)" ltail=cluster_3 lhead=cluster_6]
+	"/map/encrypt_plugin" -> "/percp/percp_parking_slot" [label="/map/encrypt_ins(50)" ltail=cluster_4 lhead=cluster_6]
+	"/pnc/pnc_wire_control" -> "/percp/percp_parking_slot" [label="/pnc/body_report(50)" ltail=cluster_10 lhead=cluster_6]
+	"/pnc/pnc_wire_control" -> "/percp/percp_parking_slot" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_6]
+	"/loc/loc_relative" -> "/percp/percp_target_fusion_alpha" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_7]
+	"/map/calib_server" -> "/percp/percp_target_fusion_alpha" [label="/map/calib_params(1)" ltail=cluster_3 lhead=cluster_7]
+	"/percp_radar_fusion" -> "/percp/percp_target_fusion_alpha" [label="/percp/radar_objects(15)" ltail=cluster_3 lhead=cluster_7]
+	"/percp/percp_trafficlane" -> "/percp/percp_target_fusion_alpha" [label="/percp/traffic_lane_multi(10)" ltail=cluster_3 lhead=cluster_7]
+	"/percp/percp_vision_object" -> "/percp/percp_target_fusion_alpha" [label="/percp/vision_objects(10)" ltail=cluster_3 lhead=cluster_7]
+	"/pnc/pnc_wire_control" -> "/percp/percp_target_fusion_alpha" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_7]
+	"/loc/loc_relative" -> "/percp/percp_trafficlane" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/percp/percp_trafficlane" [label="/pnc/body_report(50)" ltail=cluster_10 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/percp/percp_trafficlane" [label="/pnc/chassis_report(100)" ltail=cluster_10 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/percp/percp_trafficlane" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_3]
+	"/loc/loc_relative" -> "/percp/percp_vision_object" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/percp/percp_vision_object" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_3]
+	"/loc/loc_relative" -> "/percp/percp_world_model" [label="/loc/ego_tf_relative(50)" ltail=cluster_10 lhead=cluster_6]
+	"/map/calib_server" -> "/percp/percp_world_model" [label="/map/calib_params(1)" ltail=cluster_3 lhead=cluster_6]
+	"/pnc/pnc_wire_control" -> "/percp/percp_world_model" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_6]
+	"/loc/loc_relative" -> "/percp/uss" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_6]
+	"/map/calib_server" -> "/percp/uss" [label="/map/calib_params(1)" ltail=cluster_3 lhead=cluster_6]
+	"/pnc/pnc_wire_control" -> "/percp/uss" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_6]
+	"/driver_radar" -> "/percp_radar_fusion" [label="/driver/radar_front_cluster(20)" ltail=cluster_1 lhead=cluster_3]
+	"/driver_radar" -> "/percp_radar_fusion" [label="/driver/radar_front_object(20)" ltail=cluster_10 lhead=cluster_3]
+	"/driver_radar" -> "/percp_radar_fusion" [label="/driver/radar_left_front_cluster(20)" ltail=cluster_1 lhead=cluster_3]
+	"/driver_radar" -> "/percp_radar_fusion" [label="/driver/radar_left_front_object(20)" ltail=cluster_1 lhead=cluster_3]
+	"/driver_radar" -> "/percp_radar_fusion" [label="/driver/radar_left_rear_cluster(20)" ltail=cluster_1 lhead=cluster_3]
+	"/driver_radar" -> "/percp_radar_fusion" [label="/driver/radar_left_rear_object(20)" ltail=cluster_1 lhead=cluster_3]
+	"/driver_radar" -> "/percp_radar_fusion" [label="/driver/radar_right_front_cluster(20)" ltail=cluster_1 lhead=cluster_3]
+	"/driver_radar" -> "/percp_radar_fusion" [label="/driver/radar_right_front_object(20)" ltail=cluster_1 lhead=cluster_3]
+	"/driver_radar" -> "/percp_radar_fusion" [label="/driver/radar_right_rear_cluster(20)" ltail=cluster_1 lhead=cluster_3]
+	"/driver_radar" -> "/percp_radar_fusion" [label="/driver/radar_right_rear_object(20)" ltail=cluster_1 lhead=cluster_3]
+	"/loc/loc_relative" -> "/percp_radar_fusion" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_3]
+	"/pnc/pnc_wire_control" -> "/percp_radar_fusion" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_3]
+	"/loc/loc_relative" -> "/pnc/pnc_adas" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_8]
+	"/map/rc_scene_mapping" -> "/pnc/pnc_adas" [label="/map/rc_localmap(10)" ltail=cluster_3 lhead=cluster_8]
+	"/percp/percp_trafficlane" -> "/pnc/pnc_adas" [label="/percp/env_traffic_lights(10)" ltail=cluster_3 lhead=cluster_8]
+	"/percp/percp_target_fusion_alpha" -> "/pnc/pnc_adas" [label="/percp/fusion_objects(20)" ltail=cluster_7 lhead=cluster_8]
+	"/percp/localmap_vision" -> "/pnc/pnc_adas" [label="/percp/localmap_ogm(10)" ltail=cluster_6 lhead=cluster_8]
+	"/percp/percp_trafficlane" -> "/pnc/pnc_adas" [label="/percp/traffic_lane_multi(10)" ltail=cluster_3 lhead=cluster_8]
+	"/percp/percp_trafficlane" -> "/pnc/pnc_adas" [label="/percp/traffic_sign(10)" ltail=cluster_3 lhead=cluster_8]
+	"/percp/percp_trafficlane" -> "/pnc/pnc_adas" [label="/percp/traffic_static_object(10)" ltail=cluster_3 lhead=cluster_8]
+	"/pnc/pnc_wire_control" -> "/pnc/pnc_adas" [label="/pnc/body_report(50)" ltail=cluster_10 lhead=cluster_8]
+	"/pnc/pnc_wire_control" -> "/pnc/pnc_adas" [label="/pnc/chassis_report(100)" ltail=cluster_10 lhead=cluster_8]
+	"/pnc/pnc_wire_control" -> "/pnc/pnc_adas" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_8]
+	"/loc/loc_relative" -> "/pnc/pnc_mop" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_9]
+	"/percp/localmap_vision" -> "/pnc/pnc_mop" [label="/percp/localmap_ogm(10)" ltail=cluster_6 lhead=cluster_9]
+	"/percp/percp_parking_slot" -> "/pnc/pnc_mop" [label="/percp/parking_slot(20)" ltail=cluster_6 lhead=cluster_9]
+	"/pnc/pnc_wire_control" -> "/pnc/pnc_mop" [label="/pnc/body_report(50)" ltail=cluster_10 lhead=cluster_9]
+	"/pnc/pnc_wire_control" -> "/pnc/pnc_mop" [label="/pnc/chassis_report(100)" ltail=cluster_10 lhead=cluster_9]
+	"/pnc/pnc_wire_control" -> "/pnc/pnc_mop" [label="/pnc/fsm_state(50)" ltail=cluster_10 lhead=cluster_9]
+	"/map/rc_scene_mapping" -> "/pnc/pnc_prediction" [label="/map/rc_localmap(10)" ltail=cluster_3 lhead=cluster_9]
+	"/percp/percp_target_fusion_alpha" -> "/pnc/pnc_prediction" [label="/percp/fusion_objects(20)" ltail=cluster_7 lhead=cluster_9]
+	"/map/rc_scene_mapping" -> "/pnc/pnc_route" [label="/map/rc_localmap(10)" ltail=cluster_3 lhead=cluster_9]
+	"/loc/loc_relative" -> "/pnc/pnc_wire_control" [label="/loc/ego_tf_relative(50)" ltail=cluster_2 lhead=cluster_10]
+	"/percp/localmap_vision" -> "/pnc/pnc_wire_control" [label="/percp/localmap_ogm(10)" ltail=cluster_6 lhead=cluster_10]
+	"/percp/percp_parking_slot" -> "/pnc/pnc_wire_control" [label="/percp/parking_slot(20)" ltail=cluster_6 lhead=cluster_10]
+	"/pnc/pnc_adas" -> "/pnc/pnc_wire_control" [label="/pnc/adas_result(50)" ltail=cluster_8 lhead=cluster_10]
+	"/pnc/pnc_adas" -> "/pnc/pnc_wire_control" [label="/pnc/adas_safety_warn_result(20)" ltail=cluster_8 lhead=cluster_10]
+	"/pnc/pnc_adas" -> "/pnc/pnc_wire_control" [label="/pnc/adas_status(50)" ltail=cluster_8 lhead=cluster_10]
+	"/pnc/pnc_bdm" -> "/pnc/pnc_wire_control" [label="/pnc/bdm_status(10)" ltail=cluster_9 lhead=cluster_10]
+	"/pnc/pnc_control" -> "/pnc/pnc_wire_control" [label="/pnc/control_command(50)" ltail=cluster_9 lhead=cluster_10]
+	"/pnc/pnc_control" -> "/pnc/pnc_wire_control" [label="/pnc/control_status(50)" ltail=cluster_9 lhead=cluster_10]
+	"/pnc/pnc_mop" -> "/pnc/pnc_wire_control" [label="/pnc/idm_status(10)" ltail=cluster_9 lhead=cluster_10]
+	"/pnc/pnc_mop" -> "/pnc/pnc_wire_control" [label="/pnc/mop_status(20)" ltail=cluster_9 lhead=cluster_10]
+	"/pnc/pnc_prediction" -> "/pnc/pnc_wire_control" [label="/pnc/prediction_status(20)" ltail=cluster_9 lhead=cluster_10]
+	"/pnc/pnc_route" -> "/pnc/pnc_wire_control" [label="/pnc/route_status(10)" ltail=cluster_9 lhead=cluster_10]
+}
